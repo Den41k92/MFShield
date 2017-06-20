@@ -1,0 +1,16 @@
+{
+	"name": "MFShield",
+	"keywords": "multifunction, shield, MFS, MFShield",
+	"description": "Arduino based multi-function shield library",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/DireCat/MFShield.git"
+	},
+	"version": "1.0.0",
+	"frameworks": "arduino",
+	"platforms": [
+		"atmelavr",
+		"teensy",
+		"esp8266"
+	]
+}

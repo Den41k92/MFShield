@@ -6,7 +6,6 @@ const uint8_t MFShield::KEY_PIN [] = {A1, A2, A3};
 const uint8_t MFShield::SEG_MAP [] = {0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8, 0x80 ,0x90};
 const uint8_t MFShield::SEG_SEL [] = {0xf1, 0xf2, 0xf4, 0xf8};
 
-
 MFShield::MFShield ()
 {
 	for (uint8_t i=0; i < 4; i++)
@@ -35,12 +34,23 @@ MFShield::MFShield ()
 	beep (0);
 }
 
-void MFShield::display (uint16_t val, boolean leading_zero)
+void MFShield::display (int16_t val, boolean leading_zero)
 {
-	raw_segment[0] = SEG_MAP [val / 1000];
-	raw_segment[1] = SEG_MAP [(val / 100) % 10];
-	raw_segment[2] = SEG_MAP [(val / 10) % 10];
-	raw_segment[3] = SEG_MAP [val % 10];
+	/* NEGATIVE NUMBERS WILL BE ADDED SOON! */
+	/*
+	uint16_t mask = val >> 15;
+	uint16_t abs = (val + mask) ^ mask;
+	if (val < 0)
+	{
+		abs /= 10;
+		raw_segment [3] = SEG_NEGATIVE;
+	}*/
+	uint16_t abs = val;
+
+	raw_segment[0] = SEG_MAP [abs / 1000];
+	raw_segment[1] = SEG_MAP [(abs / 100) % 10];
+	raw_segment[2] = SEG_MAP [(abs / 10) % 10];
+	raw_segment[3] = SEG_MAP [abs % 10];
 	disp_enable = true;
 	if (leading_zero)
 		return;
@@ -53,9 +63,15 @@ void MFShield::display (uint16_t val, boolean leading_zero)
 		raw_segment [2] = 0xff;
 }
 
-uint16_t MFShield::getTrimmerValue ()
+uint16_t MFShield::trimmer ()
 {
 	return analogRead (MFS_PIN_TRIMMER);
+}
+
+// legacy function (better use trimmer() instead)
+uint16_t MFShield::getTrimmerValue()
+{
+	return trimmer();
 }
 
 void MFShield::loop ()
@@ -101,10 +117,10 @@ void MFShield::loop ()
 
 void MFShield::showDisplay (boolean visible)
 {
-	if (!visible && disp_enable)
+	if (!visible)
 	{
 		digitalWrite(MFS_PIN_DISP_CS, LOW);
-		for (uint8_t i=0; i < 1; i++)			
+		for (uint8_t i=0; i < 4; i++)			
 			shiftOut(MFS_PIN_DISP_DO, MFS_PIN_DISP_CK, MSBFIRST, 0xff);
 		digitalWrite(MFS_PIN_DISP_CS, HIGH);
 	}

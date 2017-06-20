@@ -1,7 +1,8 @@
-# Multi Function Shield
+# Multi Function Shield Library
 MFShield is a small and easy library for a common cheap Arduino Multi-Function Shield<br />
 Eliminates the need for using code snippets and pin definitions - you just simply call the library functions.
 
+![picture](https://s-media-cache-ak0.pinimg.com/originals/f7/1d/6a/f71d6a26fb99f469412439486c58a147.jpg)
 ## What is does
 - Calls a function when a button is pressed: <code>onKeyPress(yourFunction (uint8_t button_number))</code>
 - Shows a number on the display: <code>display (int value)</code>
@@ -16,22 +17,34 @@ Eliminates the need for using code snippets and pin definitions - you just simpl
 5. Add a <code>mfs.loop()</code> function in the main loop.
 
 <details>
-<summary><b>Example</b> <i>(click to view)</i></summary>
+<summary><b>Basic example</b> <i>(click to view)</i></summary>
 
  ```arduino
+
 #include <MFShield.h>
 
 MFShield mfs;
 
 void setup ()
 {
-	// some init stuff
+	Serial.begin (9600);
+	/* Handle buttons */
+	mfs.onKeyPress ([](uint8_t button) {
+		mfs.beep(10);	// make sound
+		mfs.setLed (button, !mfs.getLed(button)); // toggle onboard leds
+		Serial.println ("Button pressed: " + String(button));
+	});
 }
 
 void loop ()
 {
+	/* Display seconds */
+	mfs.display (millis() / 1000);
+
 	mfs.loop();
-	// your code here
+	/* ^ It's important to insert this loop function in the main loop
+	 *   else numeric display wont work
+	 */
 }
 ```
 </details>
@@ -44,4 +57,4 @@ See examples for detailed description.
 	
 ## TODO
 	- Display negative and floating point numbers
-	- Binary level optimisation (use port registers instead of digitalWrite())
+

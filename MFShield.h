@@ -43,17 +43,21 @@ class MFShield
 		// NOTE: the function must have an argument (8-bit variable) to receive the number of button is being pressed
 		void onKeyPress (void (*func)(uint8_t key));	
 
-		uint16_t getTrimmerValue ();	// read potentiometer value
+		uint16_t trimmer();				// read onboard potentiometer value
+		uint16_t getTrimmerValue ();	// idem
 
 		void setLed (uint8_t led, boolean state);
 		boolean getLed (uint8_t led);
 
 		void beep (uint16_t ms = 100);	// emit a sound for a specific duration
 
-		void display (uint16_t val, boolean leading_zero = false); 	// shows a number on the display
+		void display (int16_t val, boolean leading_zero = false); 	// show the number on display
+		//void display (float val, boolean leading_zero = false);
+
 		void showDisplay (boolean visible = true);		// turns on and off the numeric display
 
-		void loop ();	// always call this function in the main loop
+		/* [!] Don't forget to insert this function in the main loop: */
+		void loop ();	
 
 	private:
 
